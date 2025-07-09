@@ -1,27 +1,29 @@
-import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
-import { initialTodos,validationConfig } from "../utils/constants.js";
+import { v4 as uuidv4 } from "https://jspm.dev/uuid";
+import { initialTodos, validationConfig } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
-import FormValidator from '../components/FormValidator.js';
+import FormValidator from "../components/FormValidator.js";
 
 const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopup = document.querySelector("#add-todo-popup");
 const addTodoForm = addTodoPopup.querySelector(".popup__form");
 const addTodoCloseBtn = addTodoPopup.querySelector(".popup__close");
 const todosList = document.querySelector(".todos__list");
+const counterElement = document.querySelector(".counter__text");
 
 const openModal = (modal) => {
   modal.classList.add("popup_visible");
+  document.addEventListener("keydown", handleEscapeClose);
 };
 
 const closeModal = (modal) => {
   modal.classList.remove("popup_visible");
+  document.removeEventListener("keydown", handleEscapeClose);
 };
 
 const generateTodo = (data) => {
   const todo = new Todo(data, "#todo-template");
-const todoElement = todo.getview();
-return todoElement;
-
+  const todoElement = todo.getView();
+  return todoElement;
 };
 
 addTodoButton.addEventListener("click", () => {
@@ -31,6 +33,18 @@ addTodoButton.addEventListener("click", () => {
 addTodoCloseBtn.addEventListener("click", () => {
   closeModal(addTodoPopup);
 });
+
+const handleEscapeClose = (evt) => {
+  if (evt.key === "Escape") {
+    const addTodoPopup = document.querySelector(".popup_visible");
+    closeModal(addTodoPopup);
+  }
+};
+
+const updateCounter = () => {
+  const todos = todosList.querySelectorAll(".todo");
+  counterElement.textContent = todos.length;
+};
 
 addTodoForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
@@ -46,12 +60,15 @@ addTodoForm.addEventListener("submit", (evt) => {
   todosList.append(todo);
   closeModal(addTodoPopup);
   newTodoValidator.resetValidation();
+  updateCounter();
 });
 
 initialTodos.forEach((item) => {
   const todo = generateTodo(item);
   todosList.append(todo);
 });
+
+updateCounter();
 
 const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
 newTodoValidator.enableValidation();

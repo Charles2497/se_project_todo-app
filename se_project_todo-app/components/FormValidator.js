@@ -1,5 +1,5 @@
 class FormValidator {
-  constructor(settings, formEl, errorMessage) {
+  constructor(settings, formEl) {
     this._inputSelector = settings.inputSelector;
     this._formSelector = settings.formSelector;
     this._submitButtonSelector = settings.submitButtonSelector;
@@ -7,11 +7,22 @@ class FormValidator {
     this._inputErrorClass = settings.inputErrorClass;
     this._inactiveButtonClass = settings.inactiveButtonClass;
     this._formEl = formEl;
-    this._errorMessage = errorMessage;
   }
 
   resetValidation() {
     console.log("Reset validation called");
+    // Get all input elements using this._settings.inputSelector
+    const inputElements = this._formEl.querySelectorAll(this._inputSelector);// ... your selector here
+    console.log('Input elements found:', inputElements);
+    console.log('Number of elements:', inputElements.length);
+    
+    // Loop through each input element
+    inputElements.forEach((inputElement) => {
+      console.log('Current input element:', inputElement);
+        this._hideInputError(inputElement);
+    });
+    
+    // Reset form and disable submit button
     this._formEl.reset();
     this._toggleButtonState();
   }
@@ -22,7 +33,7 @@ class FormValidator {
       `#${inputElement.id}-error`
     );
     inputElement.classList.add(this._inputErrorClass);
-    errorElement.textContent = this._errorMessage;
+    errorElement.textContent =inputElement.validationMessage;
     errorElement.classList.add(this._errorClass);
   };
 
@@ -31,7 +42,7 @@ class FormValidator {
     const errorElement = this._formEl.querySelector(errorElementId);
     inputElement.classList.remove(this._inputErrorClass);
     errorElement.classList.remove(this._errorClass);
-    errorElement.textContent = this._errorMessage;
+    errorElement.textContent = inputElement.validationMessage;
   };
 
   _checkInputValidity(inputElement) {
@@ -49,7 +60,7 @@ class FormValidator {
   }
 
   _toggleButtonState() {
-    if (this._hasInvalidInput(this._inputList)) {
+    if (this._hasInvalidInput()) {
       this._buttonElement.classList.add(this._inactiveButtonClass);
       this._buttonElement.disabled = true;
     } else {
