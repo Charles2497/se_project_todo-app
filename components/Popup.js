@@ -17,7 +17,9 @@ class Popup {
 
   close() {
     this._popupElement.classList.remove("popup_visible");
-    document.removeEventListener("keyup", (evt) => this._handleEscapeClose(evt));
+    document.removeEventListener("keyup", (evt) =>
+      this._handleEscapeClose(evt)
+    );
   }
 
   setEventListeners() {
@@ -34,3 +36,4 @@ class Popup {
 }
 
 export default Popup;
+
