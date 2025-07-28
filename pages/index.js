@@ -34,10 +34,22 @@ const addTodoPopup = new PopupWithForm({
   },
 });
 
-addTodoPopup.setEventListners();
+const generateTodo = (data) => {
+  const todo = new Todo(
+    data,
+    "#todo-template",
+    handleCheck,
+    handleDelete,
+    handleAdd
+  );
+  const todoElement = todo.getView();
+  return todoElement;
+};
+
+addTodoPopup.setEventListeners();
 
 const section = new Section({
-  items: [],
+  items: initialTodos,
   renderer: (item) => {
     const todo = generateTodo(item);
     return todo;
@@ -61,23 +73,10 @@ function handleAdd() {
   todoCounter.updateTotal(true);
 }
 
-const generateTodo = (data) => {
-  const todo = new Todo(
-    data,
-    "#todo-template",
-    handleCheck,
-    handleDelete,
-    handleAdd
-  );
-  const todoElement = todo.getView();
-  return todoElement;
-};
-
 addTodoButton.addEventListener("click", () => {
   addTodoPopup.open();
 });
 
-
-
 const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
 newTodoValidator.enableValidation();
+
